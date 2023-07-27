@@ -1,0 +1,54 @@
+{% extends "components/base.html" %}
+
+{% block main %}
+
+
+<article
+  class="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
+>
+  <img
+    alt="Office"
+    src="https://cdn.corporatefinanceinstitute.com/assets/budget.jpeg"
+    class="h-56 w-full object-cover"
+  />
+
+  <div class="p-4 sm:p-6">
+    <a href="#">
+      <h3 class="text-lg font-medium text-gray-900">
+        FinTrack: Ваш персональный помощник в управлении финансами
+      </h3>
+    </a>
+
+<div class="mt-2 text-sm text-gray-500">
+    <p>Сложно контролировать ваши доходы и расходы? Теряетесь в море квитанций, счетов и банковских операций? С FinTrack у вас все под контролем!</p>
+    <h4 class="mt-4 text-lg text-gray-700">Особенности FinTrack:</h4>
+    <ul class="list-disc list-inside">
+        <li>Отслеживание доходов и расходов: Учет каждой копейки с FinTrack. Ведите детальный учет всех ваших доходов и расходов, будь то зарплата, наличные, банковские счета или цифровые кошельки.</li>
+        <li>Умное планирование бюджета: Задайте свои финансовые цели и следите за их достижением с помощью нашего инструмента планирования бюджета.</li>
+        <li>Аналитика и отчеты: Подробные графики и отчеты помогут вам лучше понять, куда уходят ваши деньги, и определить области для экономии.</li>
+        <li>Безопасность и конфиденциальность: Мы ценим вашу приватность и безопасность. Ваши данные хранятся в зашифрованном виде и никогда не передаются третьим лицам.</li>
+    </ul>
+    <p class="mt-4">С FinTrack управление личными финансами станет проще и удобнее. Загрузите наше приложение и начните контролировать свой бюджет уже сегодня!</p>
+</div>
+
+
+    <a
+      href="/register"
+      class="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600"
+    >
+      Войти
+
+      <span
+        aria-hidden="true"
+        class="block transition-all group-hover:ms-0.5 rtl:rotate-180"
+      >
+        &rarr;
+      </span>
+    </a>
+  </div>
+</article>
+
+
+
+
+{% endblock main %}
