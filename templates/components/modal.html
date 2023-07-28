@@ -1,0 +1,43 @@
+<form id="income-form" method="post">
+    {% csrf_token %}
+
+<div class="relative">
+  <label for="Search" class="sr-only"> Search </label>
+
+  <input
+    type="number"
+    name="sum"
+    placeholder="Введите сумму"
+    class="w-full rounded-md border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm"
+  />
+
+  <span class="absolute inset-y-0 end-0 grid w-10 place-content-center">
+    <button type="button" class="text-gray-600 hover:text-gray-700">
+      <span class="sr-only">Search</span>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="h-4 w-4"
+      >
+
+      </svg>
+    </button>
+  </span>
+</div>
+    <!-- Your form fields here -->
+    <div class="relative mt-4">
+        <label for="account" class="block text-sm font-medium text-gray-700">Счет</label>
+        <select id="account" name="account" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option selected>Выберите счет</option>
+
+            {% for account in incomes_accounts %}
+                <option value="{{ account.id }}">{{ account.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Добавить</button>
+</form>
