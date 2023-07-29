@@ -7,6 +7,11 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import ExpensesCategory, IncomesAccount, Expense, Income
 from itertools import chain
+from django.core import serializers
+from django.db.models import Sum
+import json
+
+
 
 
 def home(request):
@@ -199,6 +204,32 @@ def main(request):
         'expenses': expenses,
     })
 
+
+def diagram(request):
+    if request.user.is_authenticated:
+        incomes_accounts = IncomesAccount.objects.filter(user=request.user)
+        expenses_categories = ExpensesCategory.objects.filter(user=request.user)
+
+        incomes = Income.objects.filter(user=request.user).values('account__title').annotate(total=Sum('sum'))
+        expenses = Expense.objects.filter(user=request.user).values('category__title').annotate(total=Sum('sum'))
+
+        data = {
+            'name': 'root',
+            'children': [
+                {
+                    'name': 'Income',
+                    'children': [{'name': income['account__title'], 'value': income['total']} for income in incomes]
+                },
+                {
+                    'name': 'Expenses',
+                    'children': [{'name': expense['category__title'], 'value': expense['total']} for expense in expenses]
+                }
+            ]
+        }
+
+        return render(request, 'django_app/diagram.html', {
+            'data': json.dumps(data)
+        })
 
 
 

@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
+# from djmoney.models.fields import MoneyField
 
 
 class ExpensesCategory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=350)
     datetime = models.DateTimeField(auto_now_add=True)
+
 
     class Meta:
         ordering = ("title",)
