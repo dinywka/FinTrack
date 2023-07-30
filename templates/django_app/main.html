@@ -3,8 +3,14 @@
 
 {% block main %}
 
-<div class="container mx-auto py-10 grid grid-cols-2 gap-6">
+<div class="flex justify-center items-center">
+    <span class="whitespace-nowrap rounded-full bg-purple-100 px-2.5 py-0.5 text-sm text-purple-700">
+        Общая сумма на Вашем счете: {{ total_amount }}
+    </span>
+</div>
 
+
+<div class="container mx-auto py-10 grid grid-cols-2 gap-6">
     <!-- Income Section -->
     <div class="border rounded-lg p-5 flex flex-col" id="add-income">
         <h2 class="text-2xl mb-5">Доходы</h2>
@@ -78,13 +84,21 @@
       {% if transaction_type == 'income' %}Income{% else %}Expense{% endif %}
     </td>
     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ transaction.datetime }}</td>
-    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ transaction.sum }}</td>
+    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ transaction.amount }}</td>
     <td class="whitespace-nowrap px-4 py-2 text-gray-700">
       {% if transaction_type == 'income' %}
         {{ transaction.account.title }}
       {% else %}
         {{ transaction.category.title }}
       {% endif %}
+            <td class="whitespace-nowrap px-4 py-2">
+        <a
+            href="{% url 'delete_record' model_type=transaction.get_model_type pk=transaction.pk %}"
+            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+        >
+            Удалить
+        </a>
+    </td>
     </td>
 </tr>
 {% endfor %}

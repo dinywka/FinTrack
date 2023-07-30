@@ -15,7 +15,7 @@
 
   <input
     type="number"
-    name="sum"
+    name="amount"
     placeholder="Введите сумму"
     class="w-full rounded-md border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm"
   />
@@ -86,8 +86,8 @@
       <form id="expense-form" method="post">
         {% csrf_token %}
         <div class="relative">
-          <label for="sum" class="sr-only">Sum</label>
-          <input type="number" name="sum" placeholder="Введите сумму" class="w-full rounded-md border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm" />
+          <label for="amount" class="sr-only">Sum</label>
+          <input type="number" name="amount" placeholder="Введите сумму" class="w-full rounded-md border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm" />
         </div>
         <div class="relative mt-4">
             <label for="category" class="block text-sm font-medium text-gray-700">Категория</label>

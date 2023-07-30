@@ -32,9 +32,12 @@ class IncomesAccount(models.Model):
 
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    sum = models.IntegerField(null=True)
+    amount = models.IntegerField(null=True)
     datetime = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(ExpensesCategory, on_delete=models.CASCADE)
+
+    def get_model_type(self):
+        return "expense"
 
     class Meta:
         ordering = ("-datetime",)
@@ -42,14 +45,17 @@ class Expense(models.Model):
         verbose_name_plural = "Расходы"
 
     def __str__(self):
-        return f"{self.sum} {self.category} {self.datetime}"
+        return f"{self.amount} {self.category} {self.datetime}"
 
 
 class Income(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    sum = models.IntegerField(null=True)
+    amount = models.IntegerField(null=True)
     datetime = models.DateTimeField(auto_now_add=True)
     account = models.ForeignKey(IncomesAccount, on_delete=models.CASCADE)
+
+    def get_model_type(self):
+        return "income"
 
     class Meta:
         ordering = ("-datetime",)
@@ -57,4 +63,4 @@ class Income(models.Model):
         verbose_name_plural = "Доходы"
 
     def __str__(self):
-        return f"{self.sum} {self.account} {self.datetime}"
+        return f"{self.amount} {self.account} {self.datetime}"

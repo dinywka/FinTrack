@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-</head>
-<body>
-<div class="container" style="display: flex">
-<div id="chart"  style="width: 450px; align-items: center"></div>
+{% extends "components/base.html" %}
+
+{% block main %}
+<div class="container" style="display: flex; margin: 0 auto; justify-content: center; align-items: center; height: 100vh;">
+<div id="chart"  style="width: 450px;"></div>
 </div>
 <script>
 window.onload = function() {
@@ -120,5 +115,4 @@ window.onload = function() {
     }
 }
 </script>
-</body>
-</html>
+{% endblock main %}

@@ -8,4 +8,5 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('main/', views.main, name="main"),
     path('diagram/', views.diagram, name="diagram"),
+    path('delete/<str:model_type>/<str:pk>/', views.delete_record, name='delete_record'),
 ]

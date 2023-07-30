@@ -5,9 +5,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import ExpensesCategory, IncomesAccount, Expense, Income
+from django_app.models import ExpensesCategory, IncomesAccount, Expense, Income
 from itertools import chain
-from django.core import serializers
 from django.db.models import Sum
 import json
 
@@ -72,101 +71,32 @@ def logout_f(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect(reverse('login'))
 
-#
-# def main(request):
-#     incomes_accounts = None
-#     expenses_categories = None
-#     incomes = None
-#     expenses = None
-#     if request.user.is_authenticated:
-#         incomes_accounts = IncomesAccount.objects.filter(user=request.user)
-#         expenses_categories = ExpensesCategory.objects.filter(user=request.user)
-#         incomes = Income.objects.filter(user=request.user)
-#         expenses = Expense.objects.filter(user=request.user)
-#
-#         if request.method == 'POST':
-#             # Check if it's an income or an expense
-#             if 'account' in request.POST:  # This is an income
-#                 # Get the submitted data
-#                 sum = request.POST.get('sum')
-#                 account_id = request.POST.get('account')
-#                 print(f"Sum: {request.POST.get('sum')}")
-#
-#                 # Fetch the account from the database
-#                 account = IncomesAccount.objects.get(id=account_id)
-#
-#                 # Create a new Income object and save it to the database
-#                 income = Income(user=request.user, sum=sum, account=account)
-#                 income.save()
-#
-#             elif 'category' in request.POST:  # This is an expense
-#                 # Get the submitted data
-#                 sum = request.POST.get('sum')
-#                 category_id = request.POST.get('category')
-#
-#                 # Fetch the category from the database
-#                 category = ExpensesCategory.objects.get(id=category_id)
-#
-#                 # Create a new Expense object and save it to the database
-#                 expense = Expense(user=request.user, sum=sum, category=category)
-#                 expense.save()
-#
-#             #todo
-#             elif 'new_account' in request.POST:
-#                 title = request.POST.get('title', None)
-#                 IncomesAccount.objects.create(user=request.user, title=title)
-#                 return redirect('main')
-#
-#             elif 'new_expense_category' in request.POST:
-#                 title = request.POST.get('title', None)
-#                 ExpensesCategory.objects.create(user=request.user, title=title)
-#                 return redirect('main')
-#
-#             # Redirect to the same page after form submission
-#             return render(request, 'django_app/main.html', {
-#                 'incomes_accounts': incomes_accounts,
-#                 'expenses_categories': expenses_categories,
-#                 'incomes': incomes,
-#                 'expenses': expenses,
-#             })
-#
-#     else:
-#         incomes_accounts = None
-#         expenses_categories = None
-#
-#     return render(request, 'django_app/main.html', {
-#         'incomes_accounts': incomes_accounts,
-#         'expenses_categories': expenses_categories,
-#         'incomes': incomes,
-#         'expenses': expenses,
-#     })
-
 
 def main(request):
     if request.method == 'POST':
         if 'account' in request.POST:  # This is an income
                         # Get the submitted data
-            sum = request.POST.get('sum')
+            amount = request.POST.get('amount')
             account_id = request.POST.get('account')
-            print(f"Sum: {request.POST.get('sum')}")
+            print(f"Sum: {request.POST.get('amount')}")
 
                         # Fetch the account from the database
             account = IncomesAccount.objects.get(id=account_id)
 
                         # Create a new Income object and save it to the database
-            income = Income(user=request.user, sum=sum, account=account)
+            income = Income(user=request.user, amount=amount, account=account)
             income.save()
 
         elif 'category' in request.POST:  # This is an expense
                         # Get the submitted data
-            sum = request.POST.get('sum')
+            amount = request.POST.get('amount')
             category_id = request.POST.get('category')
 
                         # Fetch the category from the database
             category = ExpensesCategory.objects.get(id=category_id)
 
                         # Create a new Expense object and save it to the database
-            expense = Expense(user=request.user, sum=sum, category=category)
+            expense = Expense(user=request.user, amount=amount, category=category)
             expense.save()
 
                     #todo
@@ -192,17 +122,43 @@ def main(request):
         expenses = Expense.objects.filter(user=request.user)
         table_incomes = [(income, 'income') for income in Income.objects.filter(user=request.user)]
         table_expenses = [(expense, 'expense') for expense in Expense.objects.filter(user=request.user)]
-
         transactions = list(chain(table_expenses, table_incomes))
         transactions.sort(key=lambda x: x[0].datetime, reverse=True)
+        print(transactions)
+        income_total = 0
+        for item in table_incomes:
+            if item[0].amount is not None:
+                income_total += item[0].amount
 
-    return render(request, 'django_app/main.html', {
-        'transactions': transactions,
-        'incomes_accounts': incomes_accounts,
-        'expenses_categories': expenses_categories,
-        'incomes': incomes,
-        'expenses': expenses,
-    })
+        expense_total = 0
+        for item in table_expenses:
+            if item[0].amount is not None:
+                expense_total += item[0].amount
+
+        total_amount = income_total - expense_total
+
+
+    return render(request, 'django_app/main.html', dict(transactions=transactions, incomes_accounts=incomes_accounts,
+                                                        expenses_categories=expenses_categories, incomes=incomes,
+                                                        expenses=expenses, total_amount=total_amount))
+
+
+def delete_record(request, model_type: str, pk: str):
+    """Удаление дохода или расхода."""
+
+    if request.method == "GET":
+        if model_type == "income":
+            model_class = Income
+        elif model_type == "expense":
+            model_class = Expense
+        else:
+            raise ValueError("Invalid model_type")
+
+        record = model_class.objects.get(id=int(pk))
+        record.delete()
+        return redirect(reverse("main"))
+    else:
+        raise ValueError("Invalid method")
 
 
 def diagram(request):
@@ -210,8 +166,8 @@ def diagram(request):
         incomes_accounts = IncomesAccount.objects.filter(user=request.user)
         expenses_categories = ExpensesCategory.objects.filter(user=request.user)
 
-        incomes = Income.objects.filter(user=request.user).values('account__title').annotate(total=Sum('sum'))
-        expenses = Expense.objects.filter(user=request.user).values('category__title').annotate(total=Sum('sum'))
+        incomes = Income.objects.filter(user=request.user).values('account__title').annotate(total=Sum('amount'))
+        expenses = Expense.objects.filter(user=request.user).values('category__title').annotate(total=Sum('amount'))
 
         data = {
             'name': 'root',
