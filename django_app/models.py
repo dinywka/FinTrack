@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
-# from djmoney.models.fields import MoneyField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+
 
 
 class ExpensesCategory(models.Model):
@@ -64,3 +67,10 @@ class Income(models.Model):
 
     def __str__(self):
         return f"{self.amount} {self.account} {self.datetime}"
+
+
+@receiver(post_save, sender=User)
+def create_default_category(sender, instance, created, **kwargs):
+    if created:
+        ExpensesCategory.objects.create(user=instance, title='Продукты')
+        IncomesAccount.objects.create(user=instance, title='Общий')
